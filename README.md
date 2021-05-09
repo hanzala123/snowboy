@@ -30,6 +30,26 @@ python generate_pmdl.py -r1=record1.wav -r2=record2.wav -r3=record3.wav -lang=en
 python demo.py hotword.pmdl
 ```
 
+### Build your own personal models (using Docker)
+* Build a new docker image based on `Dockerfile` from this repo:
+```
+docker build -t snowboy-pmdl .
+``` 
+
+* This will create an image which you can run to train your personal model. In order for this to work you'll need to create a directory called model on your host machine (Ubuntu 18 or whatever) and place your three audio files in there. So the directory should look something like this (note: the wav files need the exact names as below or it won't work):
+```
+$ ls model/
+record1.wav  record2.wav  record3.wav
+```
+
+* Finally you can call docker (note: need to be in the parent directory of model):
+```
+docker run -it -v $(pwd)/model:/snowboy-master/examples/Python/model snowboy-pmdl
+```
+_This command mounts the model directory in the docker container and runs a script which calls generate_pmdl.py_
+
+* If everything went well, you should now have a file called hotword.pmdl in your model directory.
+
 ## Alexa support
 
 Snowboy now brings hands-free experience to the [Alexa AVS sample app](https://github.com/alexa/avs-device-sdk/wiki/Raspberry-Pi-Quick-Start-Guide-with-Script) on Raspberry Pi! See more info below regarding the performance and how you can use other hotword models. The following instructions currently support AVS sdk Version 1.12.1.
@@ -154,6 +174,7 @@ Currently we have built wrappers for:
 * Python2/Python3
 * iOS/Swift3 (thanks to @grimlockrocks)
 * iOS/Object-C (thanks to @patrickjquinn)
+* GStreamer plugin with Python3 example (thanks to @liamw9534)
 
 If you want support on other hardware/OS, please send your request to
 [snowboy@kitt.ai](mailto:snowboy.kitt.ai)
